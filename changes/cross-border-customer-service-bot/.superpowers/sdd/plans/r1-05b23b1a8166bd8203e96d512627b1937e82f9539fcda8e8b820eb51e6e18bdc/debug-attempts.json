@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "context": {
+    "workflow": "full",
+    "artifacts_hash": "sha256:22e55b91f3e5a8978df4141bf9e1a863d27ec5490a159aaa26b0c82b3b1ca81e",
+    "contract_hash": "sha256:bc676fb2ba32d641fb9319faef706040c947048295be34f0a47a120b09308e41",
+    "execution_plan_hash": "sha256:05b23b1a8166bd8203e96d512627b1937e82f9539fcda8e8b820eb51e6e18bdc",
+    "execution_plan_revision": 1
+  },
+  "attempts": [
+    {
+      "id": "classifier-json-1",
+      "summary": "Question Classifier returned invalid JSON for explicit human-handoff phrase under default qwen3.8-max settings.",
+      "evidence": ".superpowers/sdd/debug/attempt-1-invalid-json.md",
+      "evidence_sha256": "sha256:567b4f07822da3bc98e0fcdf2799fc3f43556dfd942f5220a82beaefed48833b",
+      "recorded_at": "2026-08-18T18:57:55.806Z"
+    },
+    {
+      "id": "classifier-json-2",
+      "summary": "Strict output prompt and ASCII category labels still produced no JSON block for explicit human-handoff phrase.",
+      "evidence": ".superpowers/sdd/debug/attempt-2-no-json-after-prompt-and-labels.md",
+      "evidence_sha256": "sha256:98effb84d3870b4eae74fb1f8ced0ee7afa5f038ec7d0bf7be0214a89bbcbf63",
+      "recorded_at": "2026-08-18T18:57:55.863Z"
+    },
+    {
+      "id": "classifier-json-3",
+      "summary": "Disabling thinking mode retained the no-JSON failure; classifier processed data and output were empty objects.",
+      "evidence": ".superpowers/sdd/debug/attempt-3-no-json-after-thinking-disabled.md",
+      "evidence_sha256": "sha256:59c05444186658e09d4f1fab11dfb8812ef1e402d94f099ab8773a6e0768f7c8",
+      "recorded_at": "2026-08-18T18:57:55.918Z"
+    }
+  ]
+}

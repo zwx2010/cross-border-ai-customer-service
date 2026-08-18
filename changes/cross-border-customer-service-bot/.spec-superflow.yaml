@@ -2,7 +2,7 @@
 # Derived data. Always rebuildable from artifacts. Lost/corrupt → fall back to content-level detection.
 
 # === Core state ===
-state: executing
+state: debugging
 workflow: full
 revision: 1
 
@@ -21,9 +21,9 @@ spec_publication_receipt: null
 
 # === Metadata ===
 change_name: cross-border-customer-service-bot
-last_transition: 2026-08-18T11:44:32.147Z
-last_transition_from: approved-for-build
-last_transition_to: executing
+last_transition: 2026-08-18T18:57:21.852Z
+last_transition_from: executing
+last_transition_to: debugging
 
 # === Decision points ===
 dp_0_decisions: 变更名：cross-border-customer-service-bot。意图：使用 Dify 构建跨境电商客服机器人。范围：第一阶段聚焦核心客服对话，支持英语、越南语、泰语三语交流；当客户语气较差或明确要求转人工时，触发人工接管。约束：基于 Dify；涉及 API/数据结构；新增模块、跨模块业务和行为规则，高不确定性。原后续优化：自动翻译、售后退款、知识库管理、客服数据分析，暂不纳入当前阶段。范围修订：用户随后明确将知识库管理纳入首期，包含文档上传/删除/更新、分类、版本与生效控制、检索测试、回答来源展示；自动翻译专项优化、客服数据分析仍后置。沟通方式：先由助手起草完整方案，用户统一审核。artifact_language=中文；workflow_path=full；recommendation=full，用户已确认。
