@@ -1,0 +1,10 @@
+{
+  "status": "pass",
+  "base": "93ce28011df91a9d549730e958a1a69d72c1cbcc",
+  "head": "0c614e8056c8134c2843ec84a12ef651c500f591",
+  "report": ".superpowers\\sdd\\reviews\\handoff.md",
+  "report_sha256": "sha256:8677916668510cb355d126fb76660ff6450f8b1926ec853fe1b21753c53bd9be",
+  "plan_hash": "sha256:05b23b1a8166bd8203e96d512627b1937e82f9539fcda8e8b820eb51e6e18bdc",
+  "plan_revision": 1,
+  "recorded_at": "2026-08-18T21:30:20.670Z"
+}
