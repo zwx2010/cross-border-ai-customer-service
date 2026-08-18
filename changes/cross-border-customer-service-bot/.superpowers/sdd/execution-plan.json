@@ -1,7 +1,7 @@
 {
   "mode": "sdd",
-  "source": "user-confirmed",
-  "rationale": "用户选择推荐的 SDD 模式；项目包含 9 个任务、4 个依赖 Wave，需要逐 Wave review",
+  "source": "user-confirmed-revision",
+  "rationale": "知识库波次已完成，重新绑定当前制品哈希并保留全部执行波次",
   "waves": [
     {
       "id": "foundation",
@@ -48,10 +48,10 @@
       ]
     }
   ],
-  "artifacts_hash": "sha256:22e55b91f3e5a8978df4141bf9e1a863d27ec5490a159aaa26b0c82b3b1ca81e",
+  "artifacts_hash": "sha256:d4da31ff437f75e749961b087dd93d7eda548b049c9795a1c15eb867b757853d",
   "contract_hash": "sha256:bc676fb2ba32d641fb9319faef706040c947048295be34f0a47a120b09308e41",
   "workflow": "full",
-  "revision": 1,
+  "revision": 2,
   "recommendation": {
     "available_modes": [
       "inline",
@@ -141,17 +141,17 @@
         ]
       }
     ],
-    "artifacts_hash": "sha256:22e55b91f3e5a8978df4141bf9e1a863d27ec5490a159aaa26b0c82b3b1ca81e",
+    "artifacts_hash": "sha256:d4da31ff437f75e749961b087dd93d7eda548b049c9795a1c15eb867b757853d",
     "contract_hash": "sha256:bc676fb2ba32d641fb9319faef706040c947048295be34f0a47a120b09308e41",
     "workflow": "full",
-    "execution_plan_revision_at_recommendation": null,
-    "created_at": "2026-08-18T11:40:48.999Z",
-    "hash": "sha256:befd92ec70afebfae64d718a3fae7f46351bd13d11327aee9c01d7b527d61eca"
+    "execution_plan_revision_at_recommendation": 1,
+    "created_at": "2026-08-18T21:42:20.410Z",
+    "hash": "sha256:f308dbfdfea17c59cd0d63dd3b34b10251370b9cf7a7adfe4c910722f62f59b9"
   },
   "selection": {
     "confirmed": true,
     "followed_recommendation": true,
     "acknowledged_non_recommendation": false
   },
-  "hash": "sha256:05b23b1a8166bd8203e96d512627b1937e82f9539fcda8e8b820eb51e6e18bdc"
+  "hash": "sha256:261b308b6495cbaa836d47c064889a73ad9d4055f76a16899aae9d7ef14e2e33"
 }
