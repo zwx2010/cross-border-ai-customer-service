@@ -29,5 +29,14 @@
       "evidence_sha256": "sha256:59c05444186658e09d4f1fab11dfb8812ef1e402d94f099ab8773a6e0768f7c8",
       "recorded_at": "2026-08-18T18:57:55.918Z"
     }
-  ]
+  ],
+  "escalation": {
+    "id": "e36c0fe7-16eb-4b19-b232-787e4a568ef3",
+    "decision": "continue",
+    "reason": "用户确认继续：在保留 qwen3.8-max 的前提下，增加前置确定性人工接管规则，绕过不稳定的 Question Classifier 高风险路径。",
+    "result": "continue: 用户确认继续：在保留 qwen3.8-max 的前提下，增加前置确定性人工接管规则，绕过不稳定的 Question Classifier 高风险路径。",
+    "confirmed": true,
+    "attempt_count": 3,
+    "recorded_at": "2026-08-18T19:00:02.174Z"
+  }
 }
