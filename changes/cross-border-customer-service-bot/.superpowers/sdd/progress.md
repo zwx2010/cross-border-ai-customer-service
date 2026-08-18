@@ -14,5 +14,7 @@
 - Added a variable aggregator and conditional branch; the `HUMAN` branch is configured to match `HUMAN` and route to the existing `accept_handoff` intervention node, while the ELSE branch routes to Question Classifier.
 - The stale `开始 → Question Classifier` edge was removed. The intended path is now `开始 → LLM 3 → 变量聚合器 → 条件分支`; HUMAN routes to `accept_handoff`, ELSE routes to Question Classifier.
 - Regression evidence: `I need a human agent, please.` and `I want a refund for my order.` both pause at 人工介入 and expose the `已接管` action; the former completed successfully after confirmation.
-- Remaining failure: `Where is my order?` is also routed to 人工介入, so the qwen3.8-max pre-classifier is over-triggering HUMAN. Multilingual logistics regression is paused until the pre-classifier prompt/rule is tightened.
-- Status: not passed. Do not publish; refine the pre-classifier and rerun all three language logistics cases.
+- Root cause found: the pre-classifier LLM had no user-role message bound to the incoming query, and its reasoning text was being included in the aggregate output. Enabled reasoning-tag separation and bound a user message to `sys.query`.
+- The pre-classifier now emits `HUMAN`, `LOGISTICS`, or `OTHER`; `HUMAN` uses exact matching for the handoff branch, while `LOGISTICS` routes directly to the existing logistics knowledge node and bypasses the unstable multilingual Question Classifier path.
+- Regression evidence: English, Vietnamese, and Thai logistics questions all completed successfully in the corresponding language and requested an order number. English human-handoff completed at 人工介入 and exposed `已接管`; refund had previously reached the same handoff node.
+- Status: handoff and multilingual logistics repair passed in Dify preview. Remaining work is the broader knowledge-base wave and final acceptance; do not publish yet.
