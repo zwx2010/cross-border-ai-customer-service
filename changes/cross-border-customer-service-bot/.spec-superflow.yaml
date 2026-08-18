@@ -1,0 +1,48 @@
+# .spec-superflow.yaml — lightweight state machine
+# Derived data. Always rebuildable from artifacts. Lost/corrupt → fall back to content-level detection.
+
+# === Core state ===
+state: executing
+workflow: full
+revision: 1
+
+# === Hashes (fast staleness detection) ===
+artifacts_hash: sha256:22e55b91f3e5a8978df4141bf9e1a863d27ec5490a159aaa26b0c82b3b1ca81e
+contract_hash: sha256:bc676fb2ba32d641fb9319faef706040c947048295be34f0a47a120b09308e41
+
+# === Execution progress ===
+execution_mode: sdd
+execution_plan_hash: sha256:05b23b1a8166bd8203e96d512627b1937e82f9539fcda8e8b820eb51e6e18bdc
+execution_plan_revision: 1
+batches_completed: 0
+test_result: null
+spec_merged: false
+spec_publication_receipt: null
+
+# === Metadata ===
+change_name: cross-border-customer-service-bot
+last_transition: 2026-08-18T11:44:32.147Z
+last_transition_from: approved-for-build
+last_transition_to: executing
+
+# === Decision points ===
+dp_0_decisions: 变更名：cross-border-customer-service-bot。意图：使用 Dify 构建跨境电商客服机器人。范围：第一阶段聚焦核心客服对话，支持英语、越南语、泰语三语交流；当客户语气较差或明确要求转人工时，触发人工接管。约束：基于 Dify；涉及 API/数据结构；新增模块、跨模块业务和行为规则，高不确定性。原后续优化：自动翻译、售后退款、知识库管理、客服数据分析，暂不纳入当前阶段。范围修订：用户随后明确将知识库管理纳入首期，包含文档上传/删除/更新、分类、版本与生效控制、检索测试、回答来源展示；自动翻译专项优化、客服数据分析仍后置。沟通方式：先由助手起草完整方案，用户统一审核。artifact_language=中文；workflow_path=full；recommendation=full，用户已确认。
+dp_0_result: confirmed
+dp_0_confirmed: true
+dp_0_timestamp: 2026-08-18T11:16:33.414Z
+dp_1_result: confirmed: 首期基于 Dify 的三语跨境电商核心客服分层工作流；覆盖商品、订单物流、售后退款退换货和知识库管理；恶劣语气、明确转人工、连续两次无法回答、退款赔付投诉时转人工；Dify 内部验证，常见问题回答准确率目标90%；外部渠道和客服数据分析后置
+dp_1_timestamp: 2026-08-18T11:26:11.412Z
+dp_2_result: approved: 用户批准 proposal、specs、design、tasks 规划包，进入执行契约阶段
+dp_2_timestamp: 2026-08-18T11:32:33.861Z
+dp_3_result: approved: 用户批准 execution-contract.md，允许进入执行模式评估
+dp_3_timestamp: 2026-08-18T11:40:32.972Z
+dp_4_result: sdd: plan revision 1; user-confirmed; 用户选择推荐的 SDD 模式；项目包含 9 个任务、4 个依赖 Wave，需要逐 Wave review
+dp_4_timestamp: 2026-08-18T11:44:20.600Z
+dp_5_result: null
+dp_5_timestamp: null
+dp_5_decisions: null
+dp_5_confirmed: null
+dp_6_result: null
+dp_6_timestamp: null
+dp_7_result: null
+dp_7_timestamp: null
