@@ -12,5 +12,7 @@
 
 - Added a qwen3.8-max pre-classifier LLM that receives `sys.query` and emits `HUMAN` or `NORMAL`.
 - Added a variable aggregator and conditional branch; the `HUMAN` branch is configured to match `HUMAN` and route to the existing `accept_handoff` intervention node, while the ELSE branch routes to Question Classifier.
-- Verification blocker: Dify still retains the original `开始 → Question Classifier` edge in parallel with the new pre-classifier path. Previewing `I need a human agent, please.` still enters Question Classifier and fails with `could not find json block in the output.`
-- Status: not passed. Continue by removing the stale direct edge, then rerun human-handoff, refund, and multilingual logistics regression cases.
+- The stale `开始 → Question Classifier` edge was removed. The intended path is now `开始 → LLM 3 → 变量聚合器 → 条件分支`; HUMAN routes to `accept_handoff`, ELSE routes to Question Classifier.
+- Regression evidence: `I need a human agent, please.` and `I want a refund for my order.` both pause at 人工介入 and expose the `已接管` action; the former completed successfully after confirmation.
+- Remaining failure: `Where is my order?` is also routed to 人工介入, so the qwen3.8-max pre-classifier is over-triggering HUMAN. Multilingual logistics regression is paused until the pre-classifier prompt/rule is tightened.
+- Status: not passed. Do not publish; refine the pre-classifier and rerun all three language logistics cases.
