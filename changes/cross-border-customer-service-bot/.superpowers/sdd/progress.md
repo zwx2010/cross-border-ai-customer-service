@@ -25,3 +25,8 @@
 - Task 3.2: complete with follow-up — Dify retrieval test was exercised with English, Vietnamese, Thai logistics queries plus product and refund queries. Results expose the matched chunk, score, and source document `TK跨境电商教程高频问答对.xlsx`.
 - Evidence: `knowledge-base-registry.md` records the current document as `V1.0`, active, sourced from internal business Q&A material. Dify's result detail currently shows the filename and chunk but does not render the custom version value; this is recorded as a follow-up for the acceptance wave.
 - Quality finding: the single mixed Q&A document produced low or semantically unrelated hits for several multilingual and product queries. The finding is preserved for acceptance and later knowledge-base optimization; no external platform or production publishing was performed.
+
+## Acceptance wave
+
+- Task 4.1: complete — fixed three-language acceptance set created in `acceptance-test-set.md`, covering product, logistics, after-sales, retrieval, no-match, explicit handoff, abusive tone, and repeated unknown-answer cases.
+- Task 4.2: blocked pending Dify preview re-run — the browser connection service could not be restored in this turn. Existing evidence confirms English/Vietnamese/Thai logistics routing and explicit/refund handoff, but does not establish the 90% target for the full acceptance set.
