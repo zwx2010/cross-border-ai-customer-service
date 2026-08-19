@@ -4,7 +4,7 @@
 # === Core state ===
 state: executing
 workflow: full
-revision: 2
+revision: 3
 
 # === Hashes (fast staleness detection) ===
 artifacts_hash: sha256:22e55b91f3e5a8978df4141bf9e1a863d27ec5490a159aaa26b0c82b3b1ca81e
@@ -12,8 +12,8 @@ contract_hash: sha256:bc676fb2ba32d641fb9319faef706040c947048295be34f0a47a120b09
 
 # === Execution progress ===
 execution_mode: sdd
-execution_plan_hash: sha256:261b308b6495cbaa836d47c064889a73ad9d4055f76a16899aae9d7ef14e2e33
-execution_plan_revision: 2
+execution_plan_hash: sha256:cc2eee1ad6fd066922a55943ef7053b3499e6215f438b65cd99b38f6ef4f3585
+execution_plan_revision: 3
 batches_completed: 1
 test_result: null
 spec_merged: false
@@ -36,8 +36,8 @@ dp_2_result: approved: 用户批准 proposal、specs、design、tasks 规划包�
 dp_2_timestamp: 2026-08-18T11:32:33.861Z
 dp_3_result: approved: 用户批准 execution-contract.md，允许进入执行模式评估
 dp_3_timestamp: 2026-08-18T11:40:32.972Z
-dp_4_result: sdd: plan revision 2; user-confirmed-revision; 知识库波次已完成，重新绑定当前制品哈希并保留全部执行波次
-dp_4_timestamp: 2026-08-18T21:42:28.480Z
+dp_4_result: sdd: plan revision 3; user-confirmed-revision; refresh plan after acceptance artifacts
+dp_4_timestamp: 2026-08-19T09:28:57.945Z
 dp_5_result: continue: 用户确认继续：在保留 qwen3.8-max 的前提下，增加前置确定性人工接管规则，绕过不稳定的 Question Classifier 高风险路径。
 dp_5_timestamp: 2026-08-18T19:00:02.174Z
 dp_5_decisions: 用户确认继续：在保留 qwen3.8-max 的前提下，增加前置确定性人工接管规则，绕过不稳定的 Question Classifier 高风险路径。
