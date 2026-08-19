@@ -3,6 +3,7 @@ import { loadConfig, type AppConfig } from './config.js';
 import { openDifyChat, parseSseFrame } from './dify.js';
 import { InMemoryConversationStore, type ConversationStore } from './store.js';
 import { InMemoryFeishuEventStore, verifyFeishuSignature, type FeishuEventStore } from './integrations/feishu.js';
+import { recordHandoff, type HandoffNotifier } from './handoff.js';
 
 interface AppOptions {
   config?: AppConfig;
@@ -10,6 +11,7 @@ interface AppOptions {
   fetcher?: typeof fetch;
   feishuEventStore?: FeishuEventStore;
   feishuEncryptKey?: string;
+  handoffNotifier?: HandoffNotifier;
 }
 
 export async function createApp(options: AppOptions = {}): Promise<FastifyInstance> {
@@ -70,6 +72,16 @@ export async function createApp(options: AppOptions = {}): Promise<FastifyInstan
       return reply.code(200).send({ status: 'accepted' });
     }
   );
+
+  app.post<{ Body: { conversationId: string; reason: string; summary?: string } }>('/api/handoff', async (request, reply) => {
+    try {
+      await recordHandoff(store, request.body, options.handoffNotifier);
+      return reply.code(202).send({ status: 'waiting_human' });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'handoff_failed';
+      return reply.code(message === 'handoff_reason_required' ? 400 : 404).send({ error: message });
+    }
+  });
 
   app.post<{ Params: { id: string }; Body: { query: string; userId: string } }>(
     '/api/conversations/:id/messages',

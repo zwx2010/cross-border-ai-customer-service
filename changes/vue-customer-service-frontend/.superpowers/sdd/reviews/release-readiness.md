@@ -9,7 +9,7 @@
 
 - `frontend`: `npm run typecheck` 通过。
 - `frontend`: `npm run build` 通过。
-- `backend`: `npm test`：9/9 通过；`npm run typecheck` 通过。
+- `backend`: `npm test`：10/10 通过；`npm run typecheck` 通过。
 - `docker compose config --quiet` 通过，使用临时示例环境文件校验后已删除临时 `.env`。
 - `git diff --check` 通过。
 - 前端主题、响应式断点、Docker/Nginx 反向代理和后端启动入口已建立。
@@ -24,7 +24,8 @@
 ## 发现
 
 - 无 Critical 或 Important 问题。
-- 当前 Store 的自动化测试使用内存实现；MySQL 迁移和部署边界已完成，生产连接池 Repository 仍应作为后续增强或真实环境联调任务处理。
+- MySQL Repository 已实现并复用统一 ConversationStore 接口；本地自动化仍使用内存 Store，真实 MySQL 联调依赖用户启动 Compose。
+- 转人工记录、飞书通知回调和 `/api/handoff` 已实现；真实飞书租户凭据与 Webhook 联调仍是环境前置条件。
 
 ## 结论
 
