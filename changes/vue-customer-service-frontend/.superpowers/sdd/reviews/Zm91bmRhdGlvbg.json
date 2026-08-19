@@ -1,0 +1,10 @@
+{
+  "status": "pass",
+  "base": "cd4ad6ad0dd36ac5e657046a0fa79dd2dd309897",
+  "head": "912b5a4d52d67a515dfcd968e11ed8ccb8a1be9a",
+  "report": ".superpowers\\sdd\\reviews\\foundation.md",
+  "report_sha256": "sha256:7fbf0ff78dd2d3b71e234db0f3898b09364ee81e99a7c2719b61bd2a66b8b9d1",
+  "plan_hash": "sha256:500e7285feaa6d471d8844f5dfa6e560ddb1f792799cea2a3291c59dd26b0d64",
+  "plan_revision": 1,
+  "recorded_at": "2026-08-19T13:32:45.956Z"
+}
