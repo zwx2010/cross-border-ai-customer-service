@@ -1,10 +1,10 @@
 {
   "status": "pass",
-  "base": "0df230a0d9ea276683ea1b46776c700de7651472",
-  "head": "744cd5c75d39c65cd4940da7eb9f75fcc2d66048",
+  "base": "744cd5c75d39c65cd4940da7eb9f75fcc2d66048",
+  "head": "86d54736d0ad457149f8a064c0866de32ebf62e5",
   "report": ".superpowers\\sdd\\reviews\\release-readiness.md",
-  "report_sha256": "sha256:3ae03235aac68673f23b047a787150b0371006ba7b9bc8f12899064f72616415",
+  "report_sha256": "sha256:d387bd52bd33088765aefae49c5effa1d736e68f7d9887068916df790fccffef",
   "plan_hash": "sha256:500e7285feaa6d471d8844f5dfa6e560ddb1f792799cea2a3291c59dd26b0d64",
   "plan_revision": 1,
-  "recorded_at": "2026-08-19T13:49:12.718Z"
+  "recorded_at": "2026-08-19T14:02:32.305Z"
 }
