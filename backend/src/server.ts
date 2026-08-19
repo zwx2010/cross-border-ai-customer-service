@@ -2,16 +2,20 @@ import Fastify, { type FastifyInstance } from 'fastify';
 import { loadConfig, type AppConfig } from './config.js';
 import { openDifyChat, parseSseFrame } from './dify.js';
 import { InMemoryConversationStore, type ConversationStore } from './store.js';
+import { InMemoryFeishuEventStore, verifyFeishuSignature, type FeishuEventStore } from './integrations/feishu.js';
 
 interface AppOptions {
   config?: AppConfig;
   store?: ConversationStore;
   fetcher?: typeof fetch;
+  feishuEventStore?: FeishuEventStore;
+  feishuEncryptKey?: string;
 }
 
 export async function createApp(options: AppOptions = {}): Promise<FastifyInstance> {
   const config = options.config ?? loadConfig();
   const store = options.store ?? new InMemoryConversationStore();
+  const feishuEventStore = options.feishuEventStore ?? new InMemoryFeishuEventStore();
   const app = Fastify({ logger: false });
 
   app.get('/health', async () => ({
@@ -43,6 +47,27 @@ export async function createApp(options: AppOptions = {}): Promise<FastifyInstan
         return reply.code(404).send({ error: 'conversation_not_found' });
       }
       return conversation;
+    }
+  );
+
+  app.post<{ Body: { event_id?: string; conversation_id?: string; action?: string }; Headers: { 'x-feishu-timestamp'?: string; 'x-feishu-signature'?: string } }>(
+    '/api/feishu/events',
+    async (request, reply) => {
+      const timestamp = request.headers['x-feishu-timestamp'];
+      const signature = request.headers['x-feishu-signature'];
+      const body = JSON.stringify(request.body ?? {});
+      if (!options.feishuEncryptKey || !timestamp || !signature || !verifyFeishuSignature(timestamp, signature, options.feishuEncryptKey, body)) {
+        return reply.code(401).send({ error: 'feishu_signature_invalid' });
+      }
+      const eventId = request.body.event_id;
+      if (!eventId) return reply.code(400).send({ error: 'event_id_required' });
+      if (await feishuEventStore.has(eventId)) return reply.code(200).send({ status: 'duplicate_ignored' });
+      await feishuEventStore.remember(eventId);
+      if (request.body.conversation_id && request.body.action && store.updateConversation) {
+        const status = request.body.action === 'take_over' ? 'human_active' : request.body.action === 'resolve' ? 'resolved' : 'waiting_human';
+        await store.updateConversation(request.body.conversation_id, { handoffStatus: status });
+      }
+      return reply.code(200).send({ status: 'accepted' });
     }
   );
 
