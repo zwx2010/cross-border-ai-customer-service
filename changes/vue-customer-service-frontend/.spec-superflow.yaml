@@ -1,0 +1,48 @@
+# .spec-superflow.yaml — lightweight state machine
+# Derived data. Always rebuildable from artifacts. Lost/corrupt → fall back to content-level detection.
+
+# === Core state ===
+state: bridging
+workflow: full
+revision: 1
+
+# === Hashes (fast staleness detection) ===
+artifacts_hash: sha256:068b7ee794e3220a5318ac63142e90388e42bdaa1ad558fb5a448f8761b3c8bd
+contract_hash: sha256:594fd0b322824e770ecdcb7aaaf8fbb7ec9097c60dada755a386590b9412e8c4
+
+# === Execution progress ===
+execution_mode: sdd
+execution_plan_hash: sha256:500e7285feaa6d471d8844f5dfa6e560ddb1f792799cea2a3291c59dd26b0d64
+execution_plan_revision: 1
+batches_completed: 0
+test_result: null
+spec_merged: false
+spec_publication_receipt: null
+
+# === Metadata ===
+change_name: vue-customer-service-frontend
+last_transition: 2026-08-19T11:54:01.500Z
+last_transition_from: specifying
+last_transition_to: bridging
+
+# === Decision points ===
+dp_0_decisions: 变更名：vue-customer-service-frontend。意图：在现有已验收的 Dify 跨境电商客服机器人基础上，建设独立 Vue 3 前端与独立 Fastify 后端服务。范围：前端提供客服工作台与消费者聊天页两种模式；后端代理 Dify API 并支持流式会话；保存会话、消息、语言、摘要和人工转接状态到 MySQL；通过飞书 Webhook 推送转接通知，并通过飞书自建应用机器人支持双向协作；主题通过配置文件和 CSS 变量定制；同时规划 Docker Compose 与生产云部署。约束：Dify API Key 仅保存在后端；复用现有英语、越南语、泰语、商品/物流/售后问答及人工转接规则；不执行真实退款赔付；不接入外部电商平台；客服数据分析和可视化主题编辑器后置。沟通方式：先生成完整规划包，用户统一审核。artifact_language=中文；workflow_path=full；recommendation=full，用户已确认。
+dp_0_result: confirmed
+dp_0_confirmed: true
+dp_0_timestamp: 2026-08-19T00:00:00Z
+dp_1_result: confirmed: 独立 Vue 3 前端、独立 Fastify 后端、MySQL 持久化、飞书双通道人工协作、双模式页面与配置化主题
+dp_1_timestamp: 2026-08-19T00:00:01Z
+dp_2_result: null
+dp_2_timestamp: null
+dp_3_result: approved: 用户批准 Vue 3 前端、Fastify 后端、MySQL、Dify API 代理、飞书双通道和双环境部署执行契约
+dp_3_timestamp: 2026-08-19T00:00:02Z
+dp_4_result: sdd: plan revision 1; user-confirmed; 用户确认采用推荐的 SDD 模式，按三个依赖批次执行并逐批审查
+dp_4_timestamp: 2026-08-19T13:01:01.808Z
+dp_5_result: null
+dp_5_timestamp: null
+dp_5_decisions: null
+dp_5_confirmed: null
+dp_6_result: null
+dp_6_timestamp: null
+dp_7_result: null
+dp_7_timestamp: null

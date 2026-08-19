@@ -1,0 +1,143 @@
+{
+  "mode": "sdd",
+  "source": "user-confirmed",
+  "rationale": "用户确认采用推荐的 SDD 模式，按三个依赖批次执行并逐批审查",
+  "waves": [
+    {
+      "id": "foundation",
+      "strategy": "serial",
+      "tasks": [
+        "1.1",
+        "1.2",
+        "2.1",
+        "2.2"
+      ],
+      "depends_on": []
+    },
+    {
+      "id": "experience-handoff",
+      "strategy": "serial",
+      "tasks": [
+        "3.1",
+        "3.2",
+        "3.3",
+        "4.1",
+        "4.2"
+      ],
+      "depends_on": [
+        "foundation"
+      ]
+    },
+    {
+      "id": "release-readiness",
+      "strategy": "serial",
+      "tasks": [
+        "5.1",
+        "5.2",
+        "6.1"
+      ],
+      "depends_on": [
+        "experience-handoff"
+      ]
+    }
+  ],
+  "artifacts_hash": "sha256:068b7ee794e3220a5318ac63142e90388e42bdaa1ad558fb5a448f8761b3c8bd",
+  "contract_hash": "sha256:594fd0b322824e770ecdcb7aaaf8fbb7ec9097c60dada755a386590b9412e8c4",
+  "workflow": "full",
+  "revision": 1,
+  "recommendation": {
+    "available_modes": [
+      "inline",
+      "batch-inline",
+      "sdd"
+    ],
+    "recommendation": {
+      "mode": "sdd",
+      "reasons": [
+        "The declared work spans multiple waves, so SDD keeps dependencies and review receipts explicit."
+      ]
+    },
+    "facts": {
+      "workflow": "full",
+      "documented_task_count": 12,
+      "planned_task_count": 12,
+      "planned_wave_count": 3,
+      "has_parallel_wave": false,
+      "inline_threshold": 3
+    }
+  },
+  "recommendation_receipt": {
+    "recommendation": {
+      "available_modes": [
+        "inline",
+        "batch-inline",
+        "sdd"
+      ],
+      "recommendation": {
+        "mode": "sdd",
+        "reasons": [
+          "The declared work spans multiple waves, so SDD keeps dependencies and review receipts explicit."
+        ]
+      },
+      "facts": {
+        "workflow": "full",
+        "documented_task_count": 12,
+        "planned_task_count": 12,
+        "planned_wave_count": 3,
+        "has_parallel_wave": false,
+        "inline_threshold": 3
+      }
+    },
+    "waves": [
+      {
+        "id": "foundation",
+        "strategy": "serial",
+        "tasks": [
+          "1.1",
+          "1.2",
+          "2.1",
+          "2.2"
+        ],
+        "depends_on": []
+      },
+      {
+        "id": "experience-handoff",
+        "strategy": "serial",
+        "tasks": [
+          "3.1",
+          "3.2",
+          "3.3",
+          "4.1",
+          "4.2"
+        ],
+        "depends_on": [
+          "foundation"
+        ]
+      },
+      {
+        "id": "release-readiness",
+        "strategy": "serial",
+        "tasks": [
+          "5.1",
+          "5.2",
+          "6.1"
+        ],
+        "depends_on": [
+          "experience-handoff"
+        ]
+      }
+    ],
+    "artifacts_hash": "sha256:068b7ee794e3220a5318ac63142e90388e42bdaa1ad558fb5a448f8761b3c8bd",
+    "contract_hash": "sha256:594fd0b322824e770ecdcb7aaaf8fbb7ec9097c60dada755a386590b9412e8c4",
+    "workflow": "full",
+    "execution_plan_revision_at_recommendation": null,
+    "created_at": "2026-08-19T11:54:12.432Z",
+    "hash": "sha256:6f5e867d87c06be88d479ff37c8bf58d1318c77bb2da5be1a56abe9a8b964e19"
+  },
+  "selection": {
+    "confirmed": true,
+    "followed_recommendation": true,
+    "acknowledged_non_recommendation": false
+  },
+  "hash": "sha256:500e7285feaa6d471d8844f5dfa6e560ddb1f792799cea2a3291c59dd26b0d64"
+}
