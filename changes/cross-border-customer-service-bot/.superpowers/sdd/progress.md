@@ -30,3 +30,4 @@
 
 - Task 4.1: complete — fixed three-language acceptance set created in `acceptance-test-set.md`, covering product, logistics, after-sales, retrieval, no-match, explicit handoff, abusive tone, and repeated unknown-answer cases.
 - Task 4.2: blocked pending Dify preview re-run — the browser connection service could not be restored in this turn. Existing evidence confirms English/Vietnamese/Thai logistics routing and explicit/refund handoff, but does not establish the 90% target for the full acceptance set.
+- Investigation: `.superpowers/sdd/debug/browser-service-investigation.md` confirms a trusted-path/runtime configuration failure before tab discovery; no project-side fix was attempted.
