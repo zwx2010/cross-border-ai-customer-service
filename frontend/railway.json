@@ -4,15 +4,7 @@
     "builder": "DOCKERFILE",
     "dockerfilePath": "Dockerfile",
     "watchPatterns": [
-      "src/**",
-      "index.html",
-      "nginx.conf",
-      "package.json",
-      "package-lock.json",
-      "tsconfig.json",
-      "vite.config.ts",
-      "Dockerfile",
-      "railway.json"
+      "frontend/**"
     ]
   },
   "deploy": {
