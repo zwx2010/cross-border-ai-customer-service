@@ -1,5 +1,7 @@
 export interface Conversation { id: string; userId: string; language?: string; summary?: string; handoffStatus: string; handoffReason?: string; messages: { role: string; content: string }[] }
-const baseUrl = import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:4100';
+// The Nginx proxy already owns the /api prefix in production.
+// Keep the client base URL empty by default so paths are not generated as /api/api/*.
+const baseUrl = import.meta.env.VITE_API_BASE_URL ?? '';
 
 export async function createConversation(userId: string, language: string): Promise<Conversation> {
   const response = await fetch(`${baseUrl}/api/conversations`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ userId, language }) });
