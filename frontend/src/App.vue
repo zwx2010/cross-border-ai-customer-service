@@ -60,7 +60,11 @@ async function submit() {
   if (!input.value.trim() || loading.value) return; if (!active.value) await startConversation(); if (!active.value) return;
   const query = input.value.trim(); input.value = ''; error.value = ''; loading.value = true; active.value.messages.push({ role: 'user', content: query }); active.value.messages.push({ role: 'assistant', content: '' });
   try { await sendMessage(active.value.id, userId, query, event => { const messages = active.value?.messages ?? []; const last = messages[messages.length - 1]; if (event.type === 'delta' && last) last.content += String(event.text ?? ''); if (event.type === 'error') error.value = String(event.message ?? '回复失败'); }); }
-  catch { error.value = '连接失败，请稍后重试'; } finally { loading.value = false; }
+  catch (error) {
+    error.value = error instanceof Error && error.message && error.message !== 'message_send_failed'
+      ? `Dify：${error.message}`
+      : '连接失败，请稍后重试';
+  } finally { loading.value = false; }
 }
 onMounted(async () => {
   applyTheme(defaultTheme);
