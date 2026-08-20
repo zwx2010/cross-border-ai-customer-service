@@ -5,6 +5,7 @@ export interface Environment {
   PORT?: string;
   FEISHU_WEBHOOK_URL?: string;
   FEISHU_ENCRYPT_KEY?: string;
+  CORS_ORIGIN?: string;
 }
 
 export interface AppConfig {
@@ -14,6 +15,7 @@ export interface AppConfig {
   port: number;
   feishuWebhookUrl?: string;
   feishuEncryptKey?: string;
+  corsOrigin?: string;
 }
 
 export function loadConfig(env: Environment = process.env): AppConfig {
@@ -31,6 +33,7 @@ export function loadConfig(env: Environment = process.env): AppConfig {
     mysqlUrl: env.MYSQL_URL ?? 'mysql://customer_service:customer_service@localhost:3306/customer_service',
     port,
     feishuWebhookUrl: env.FEISHU_WEBHOOK_URL?.trim() || undefined,
-    feishuEncryptKey: env.FEISHU_ENCRYPT_KEY?.trim() || undefined
+    feishuEncryptKey: env.FEISHU_ENCRYPT_KEY?.trim() || undefined,
+    corsOrigin: env.CORS_ORIGIN?.trim() || undefined
   };
 }

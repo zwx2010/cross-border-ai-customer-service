@@ -3,6 +3,7 @@ import { loadConfig } from './config.js';
 import mysql from 'mysql2/promise';
 import { MysqlConversationStore } from './mysql-store.js';
 import { buildHandoffWebhookPayload, sendFeishuWebhook } from './integrations/feishu.js';
+import { MysqlFeishuEventStore } from './mysql-feishu-event-store.js';
 
 const config = loadConfig();
 const pool = mysql.createPool(config.mysqlUrl);
@@ -15,6 +16,7 @@ const handoffNotifier = config.feishuWebhookUrl
 const app = await createApp({
   config,
   store: new MysqlConversationStore(pool),
+  feishuEventStore: new MysqlFeishuEventStore(pool),
   feishuEncryptKey: config.feishuEncryptKey,
   handoffNotifier
 });

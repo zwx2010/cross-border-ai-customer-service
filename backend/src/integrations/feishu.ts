@@ -12,10 +12,19 @@ export function verifyFeishuSignature(timestamp: string, signature: string, encr
   return expected.length === actual.length && timingSafeEqual(expected, actual);
 }
 
-export interface FeishuEventStore { has(eventId: string): Promise<boolean>; remember(eventId: string): Promise<void> }
+export interface FeishuEventStore {
+  claim(eventId: string): Promise<boolean>;
+  has?(eventId: string): Promise<boolean>;
+  remember?(eventId: string): Promise<void>;
+}
 
 export class InMemoryFeishuEventStore implements FeishuEventStore {
   private readonly ids = new Set<string>();
+  async claim(eventId: string): Promise<boolean> {
+    if (this.ids.has(eventId)) return false;
+    this.ids.add(eventId);
+    return true;
+  }
   async has(eventId: string): Promise<boolean> { return this.ids.has(eventId); }
   async remember(eventId: string): Promise<void> { this.ids.add(eventId); }
 }

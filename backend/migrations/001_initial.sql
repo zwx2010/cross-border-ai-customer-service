@@ -29,3 +29,8 @@ CREATE TABLE IF NOT EXISTS handoff_events (
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT fk_handoff_conversation FOREIGN KEY (conversation_id) REFERENCES conversations(id)
 );
+
+CREATE TABLE IF NOT EXISTS feishu_events (
+  event_id VARCHAR(128) PRIMARY KEY,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
