@@ -48,6 +48,16 @@ FEISHU_WEBHOOK_URL=
 FEISHU_ENCRYPT_KEY=
 ```
 
+要让“转接人工”按钮真正发送飞书群通知，必须在 backend 服务中填写 `FEISHU_WEBHOOK_URL`：
+
+1. 在飞书群中添加“自定义机器人”。
+2. 复制机器人 Webhook 地址。
+3. 粘贴到 Railway → backend → Variables → `FEISHU_WEBHOOK_URL`。
+4. 保存并等待 backend 重新部署。
+5. 访问 backend 的 `/health`，确认 `dependencies.feishu` 为 `configured`。
+
+如果没有配置该变量，按钮仍会更新会话为“等待人工”，但不会发送飞书消息；健康检查会显示 `feishu: missing`。
+
 不要手工固定 `PORT`。Railway 会自动注入 `PORT`，当前后端已读取该变量并监听 `0.0.0.0`。
 
 后端部署前会自动执行：
@@ -126,4 +136,3 @@ BACKEND_PRIVATE_URL=http://${{backend.RAILWAY_PRIVATE_DOMAIN}}:${{backend.PORT}}
 - 保留一个已有历史记录的会话，用于展示 MySQL 持久化。
 - 后续绑定自定义域名并启用 Railway 自动 HTTPS。
 - MySQL 开启 Railway Backups，避免演示数据丢失。
-

@@ -10,7 +10,7 @@ test('health endpoint does not expose provider credentials', async () => {
   });
   const response = await app.inject({ method: 'GET', url: '/health' });
   assert.equal(response.statusCode, 200);
-  assert.deepEqual(response.json(), { status: 'ok', dependencies: { database: 'ready', dify: 'configured' } });
+  assert.deepEqual(response.json(), { status: 'ok', dependencies: { database: 'ready', dify: 'configured', feishu: 'missing' } });
   assert.equal(response.body.includes('secret'), false);
   await app.close();
 });
@@ -28,6 +28,17 @@ test('conversation API creates and restores a conversation', async () => {
   assert.equal(restored.statusCode, 200);
   assert.equal(restored.json().id, 'c1');
   assert.equal(restored.json().language, 'en');
+  await app.close();
+});
+
+test('conversation APIs require the owner for reads and existing IDs', async () => {
+  const app = await createApp({
+    config: { difyBaseUrl: 'http://dify.local/v1', difyApiKey: 'secret', mysqlUrl: 'mysql://x', port: 4100 },
+    store: new InMemoryConversationStore()
+  });
+  await app.inject({ method: 'POST', url: '/api/conversations', payload: { conversationId: 'owned', userId: 'u1' } });
+  assert.equal((await app.inject({ method: 'GET', url: '/api/conversations/owned' })).statusCode, 400);
+  assert.equal((await app.inject({ method: 'POST', url: '/api/conversations', payload: { conversationId: 'owned', userId: 'u2' } })).statusCode, 404);
   await app.close();
 });
 

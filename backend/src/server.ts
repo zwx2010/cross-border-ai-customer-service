@@ -20,11 +20,19 @@ export async function createApp(options: AppOptions = {}): Promise<FastifyInstan
   const store = options.store ?? new InMemoryConversationStore();
   const feishuEventStore = options.feishuEventStore ?? new InMemoryFeishuEventStore();
   const app = Fastify({ logger: false });
-  await app.register(cors, { origin: true });
+  await app.register(cors, {
+    origin: config.corsOrigin
+      ? config.corsOrigin.split(',').map(item => item.trim()).filter(Boolean)
+      : true
+  });
 
   app.get('/health', async () => ({
     status: 'ok',
-    dependencies: { database: 'ready', dify: config.difyApiKey ? 'configured' : 'missing' }
+    dependencies: {
+      database: 'ready',
+      dify: config.difyApiKey ? 'configured' : 'missing',
+      feishu: options.handoffNotifier ? 'configured' : 'missing'
+    }
   }));
 
   app.post<{ Body: { conversationId?: string; userId: string; language?: string } }>(
@@ -35,6 +43,7 @@ export async function createApp(options: AppOptions = {}): Promise<FastifyInstan
         request.body.conversationId ?? crypto.randomUUID(),
         request.body.userId
       );
+      if (conversation.userId !== request.body.userId) return reply.code(404).send({ error: 'conversation_not_found' });
       if (request.body.language && store.updateConversation) {
         await store.updateConversation(conversation.id, { language: request.body.language });
         conversation.language = request.body.language;
@@ -47,7 +56,8 @@ export async function createApp(options: AppOptions = {}): Promise<FastifyInstan
     '/api/conversations/:id',
     async (request, reply) => {
       const conversation = await store.getConversation(request.params.id);
-      if (!conversation || (request.query.userId && conversation.userId !== request.query.userId)) {
+      if (!request.query.userId) return reply.code(400).send({ error: 'userId_required' });
+      if (!conversation || conversation.userId !== request.query.userId) {
         return reply.code(404).send({ error: 'conversation_not_found' });
       }
       return conversation;
@@ -83,8 +93,7 @@ export async function createApp(options: AppOptions = {}): Promise<FastifyInstan
       }
       const eventId = request.body.event_id;
       if (!eventId) return reply.code(400).send({ error: 'event_id_required' });
-      if (await feishuEventStore.has(eventId)) return reply.code(200).send({ status: 'duplicate_ignored' });
-      await feishuEventStore.remember(eventId);
+      if (!(await feishuEventStore.claim(eventId))) return reply.code(200).send({ status: 'duplicate_ignored' });
       if (request.body.conversation_id && request.body.action && store.updateConversation) {
         const status = request.body.action === 'take_over' ? 'human_active' : request.body.action === 'resolve' ? 'resolved' : 'waiting_human';
         await store.updateConversation(request.body.conversation_id, { handoffStatus: status });
@@ -93,13 +102,24 @@ export async function createApp(options: AppOptions = {}): Promise<FastifyInstan
     }
   );
 
-  app.post<{ Body: { conversationId: string; reason: string; summary?: string } }>('/api/handoff', async (request, reply) => {
+  app.post<{ Body: { conversationId: string; userId: string; reason: string; summary?: string } }>('/api/handoff', async (request, reply) => {
     try {
+      const conversation = await store.getConversation(request.body?.conversationId);
+      if (!request.body?.userId || !conversation || conversation.userId !== request.body.userId) {
+        return reply.code(404).send({ error: 'conversation_not_found' });
+      }
       await recordHandoff(store, request.body, options.handoffNotifier);
-      return reply.code(202).send({ status: 'waiting_human' });
+      return reply.code(202).send({ status: 'waiting_human', notification: options.handoffNotifier ? 'sent' : 'not_configured' });
     } catch (error) {
       const message = error instanceof Error ? error.message : 'handoff_failed';
-      return reply.code(message === 'handoff_reason_required' ? 400 : 404).send({ error: message });
+      const statusCode = message === 'handoff_reason_required'
+        ? 400
+        : message === 'conversation_not_found'
+          ? 404
+          : message.startsWith('feishu_webhook_failed:')
+            ? 502
+            : 500;
+      return reply.code(statusCode).send({ error: message });
     }
   });
 
@@ -151,7 +171,7 @@ export async function createApp(options: AppOptions = {}): Promise<FastifyInstan
         const part = await reader.read();
         if (part.done) break;
         buffer += decoder.decode(part.value, { stream: true });
-        const frames = buffer.split('\n\n');
+        const frames = buffer.split(/\r?\n\r?\n/);
         buffer = frames.pop() ?? '';
         for (const frame of frames) {
           const event = parseSseFrame(frame);

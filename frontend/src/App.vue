@@ -61,16 +61,18 @@ async function removeConversation() {
 }
 async function handoff() {
   if (!active.value) { error.value = '请先选择会话'; return; }
-  try { await requestHandoff(active.value.id, 'manual_request', active.value.summary); active.value.handoffStatus = 'waiting_human'; active.value.handoffReason = 'manual_request'; }
-  catch { error.value = '转人工失败，请稍后重试'; }
+  switching.value = true;
+  try { await requestHandoff(active.value.id, userId, 'manual_request', active.value.summary); active.value.handoffStatus = 'waiting_human'; active.value.handoffReason = 'manual_request'; error.value = '已通知人工客服，请等待接管'; }
+  catch { error.value = '转人工失败，请检查飞书通知配置后重试'; }
+  finally { switching.value = false; }
 }
 async function submit() {
   if (!input.value.trim() || loading.value) return; if (!active.value) await startConversation(); if (!active.value) return;
   const query = input.value.trim(); input.value = ''; error.value = ''; loading.value = true; active.value.messages.push({ role: 'user', content: query }); active.value.messages.push({ role: 'assistant', content: '' });
   try { await sendMessage(active.value.id, userId, query, event => { const messages = active.value?.messages ?? []; const last = messages[messages.length - 1]; if (event.type === 'delta' && last) last.content += String(event.text ?? ''); if (event.type === 'error') error.value = String(event.message ?? '回复失败'); }); }
-  catch (error) {
-    error.value = error instanceof Error && error.message && error.message !== 'message_send_failed'
-      ? `Dify：${error.message}`
+  catch (cause) {
+    error.value = cause instanceof Error && cause.message && cause.message !== 'message_send_failed'
+      ? `Dify：${cause.message}`
       : '连接失败，请稍后重试';
   } finally { loading.value = false; }
 }
