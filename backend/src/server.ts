@@ -124,7 +124,7 @@ export async function createApp(options: AppOptions = {}): Promise<FastifyInstan
         });
       } catch (error) {
         const message = error instanceof Error ? error.message : 'dify_request_failed';
-        request.log.error({ err: error }, 'Dify request failed');
+        console.error(`[Dify] ${message}`);
         return reply.code(502).send({ error: 'dify_request_failed', detail: message });
       }
       reply.hijack();
