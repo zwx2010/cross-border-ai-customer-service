@@ -111,6 +111,13 @@ export async function createApp(options: AppOptions = {}): Promise<FastifyInstan
       if (!conversation || conversation.userId !== request.body.userId) {
         return reply.code(404).send({ error: 'conversation_not_found' });
       }
+      const query = request.body.query.trim();
+      await store.appendMessage({
+        eventId: crypto.randomUUID(),
+        conversationId: conversation.id,
+        role: 'user',
+        content: query
+      });
       let response: Response;
       try {
         response = await openDifyChat({
@@ -118,7 +125,7 @@ export async function createApp(options: AppOptions = {}): Promise<FastifyInstan
           apiKey: config.difyApiKey,
           fetcher: options.fetcher
         }, {
-          query: request.body.query,
+          query,
           user: request.body.userId,
           conversationId: conversation.difyConversationId
         });

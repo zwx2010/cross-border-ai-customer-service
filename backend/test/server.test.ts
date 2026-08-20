@@ -45,3 +45,30 @@ test('conversation API deletes only the owner conversation', async () => {
   assert.equal(missing.statusCode, 404);
   await app.close();
 });
+
+test('message API persists the user message before streaming the assistant reply', async () => {
+  const app = await createApp({
+    config: { difyBaseUrl: 'http://dify.local/v1', difyApiKey: 'secret', mysqlUrl: 'mysql://x', port: 4100 },
+    store: new InMemoryConversationStore(),
+    fetcher: async () => new Response(
+      'data: {"event":"message","conversation_id":"dify-c1","message_id":"m1","answer":"请提供订单号。"}\n\n' +
+      'data: {"event":"message_end","conversation_id":"dify-c1","message_id":"m1"}\n\n',
+      { status: 200, headers: { 'content-type': 'text/event-stream' } }
+    )
+  });
+  await app.inject({ method: 'POST', url: '/api/conversations', payload: { conversationId: 'c1', userId: 'u1' } });
+
+  const response = await app.inject({
+    method: 'POST',
+    url: '/api/conversations/c1/messages',
+    payload: { userId: 'u1', query: '  物流多久能到？  ' }
+  });
+
+  assert.equal(response.statusCode, 200);
+  const conversation = await app.inject({ method: 'GET', url: '/api/conversations/c1?userId=u1' });
+  assert.deepEqual(conversation.json().messages.map((message: { role: string; content: string }) => [message.role, message.content]), [
+    ['user', '物流多久能到？'],
+    ['assistant', '请提供订单号。']
+  ]);
+  await app.close();
+});
