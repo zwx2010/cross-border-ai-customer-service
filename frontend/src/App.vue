@@ -5,7 +5,15 @@ import { applyTheme, defaultTheme } from './theme/theme';
 
 type Mode = 'agent' | 'customer';
 const mode = ref<Mode>('agent'); const language = ref('en'); const input = ref(''); const loading = ref(false); const switching = ref(false); const error = ref('');
-const userId = 'demo-user'; const conversations = ref<Conversation[]>([]); const active = ref<Conversation | null>(null);
+function getBrowserUserId(): string {
+  const storageKey = 'cross-border-customer-service:user-id';
+  const existing = window.localStorage.getItem(storageKey);
+  if (existing) return existing;
+  const created = `web-${crypto.randomUUID()}`;
+  window.localStorage.setItem(storageKey, created);
+  return created;
+}
+const userId = getBrowserUserId(); const conversations = ref<Conversation[]>([]); const active = ref<Conversation | null>(null);
 const contextMenu = ref<{ id: string; x: number; y: number } | null>(null);
 const title = computed(() => mode.value === 'agent' ? '客服工作台' : '在线客服');
 function visibleContent(content: string): string {
