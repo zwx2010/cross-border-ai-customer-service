@@ -4,14 +4,7 @@
     "builder": "DOCKERFILE",
     "dockerfilePath": "Dockerfile",
     "watchPatterns": [
-      "src/**",
-      "test/**",
-      "migrations/**",
-      "package.json",
-      "package-lock.json",
-      "tsconfig.json",
-      "Dockerfile",
-      "railway.json"
+      "backend/**"
     ]
   },
   "deploy": {
