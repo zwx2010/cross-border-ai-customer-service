@@ -111,15 +111,22 @@ export async function createApp(options: AppOptions = {}): Promise<FastifyInstan
       if (!conversation || conversation.userId !== request.body.userId) {
         return reply.code(404).send({ error: 'conversation_not_found' });
       }
-      const response = await openDifyChat({
-        baseUrl: config.difyBaseUrl,
-        apiKey: config.difyApiKey,
-        fetcher: options.fetcher
-      }, {
-        query: request.body.query,
-        user: request.body.userId,
-        conversationId: conversation.difyConversationId
-      });
+      let response: Response;
+      try {
+        response = await openDifyChat({
+          baseUrl: config.difyBaseUrl,
+          apiKey: config.difyApiKey,
+          fetcher: options.fetcher
+        }, {
+          query: request.body.query,
+          user: request.body.userId,
+          conversationId: conversation.difyConversationId
+        });
+      } catch (error) {
+        const message = error instanceof Error ? error.message : 'dify_request_failed';
+        request.log.error({ err: error }, 'Dify request failed');
+        return reply.code(502).send({ error: 'dify_request_failed', detail: message });
+      }
       reply.hijack();
       reply.raw.writeHead(200, {
         'content-type': 'text/event-stream; charset=utf-8',

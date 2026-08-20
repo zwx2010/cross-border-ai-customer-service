@@ -33,7 +33,12 @@ export async function requestHandoff(id: string, reason: string, summary?: strin
 
 export async function sendMessage(id: string, userId: string, query: string, onEvent: (event: Record<string, unknown>) => void): Promise<void> {
   const response = await fetch(`${baseUrl}/api/conversations/${id}/messages`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ userId, query }) });
-  if (!response.ok || !response.body) throw new Error('message_send_failed');
+  if (!response.ok) {
+    let detail = 'message_send_failed';
+    try { const payload = await response.json() as { detail?: string }; detail = payload.detail ?? detail; } catch { /* keep generic error */ }
+    throw new Error(detail);
+  }
+  if (!response.body) throw new Error('message_stream_missing');
   const reader = response.body.getReader(); const decoder = new TextDecoder(); let buffer = '';
   while (true) {
     const part = await reader.read(); if (part.done) break; buffer += decoder.decode(part.value, { stream: true });

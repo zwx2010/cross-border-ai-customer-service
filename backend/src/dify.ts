@@ -86,6 +86,16 @@ export async function openDifyChat(options: DifyClientOptions, request: ChatRequ
       ...(request.conversationId ? { conversation_id: request.conversationId } : {})
     })
   });
-  if (!response.ok) throw new Error(`Dify request failed with status ${response.status}`);
+  if (!response.ok) {
+    const raw = await response.text().catch(() => '');
+    let detail = raw.trim();
+    try {
+      const payload = JSON.parse(raw) as { code?: string; message?: string; description?: string };
+      detail = [payload.code, payload.message ?? payload.description].filter(Boolean).join(': ');
+    } catch {
+      // Keep the raw response when Dify does not return JSON.
+    }
+    throw new Error(`Dify request failed with status ${response.status}${detail ? `: ${detail.slice(0, 300)}` : ''}`);
+  }
   return response;
 }
