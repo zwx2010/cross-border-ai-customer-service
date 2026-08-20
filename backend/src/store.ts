@@ -21,7 +21,9 @@ export interface Conversation {
 export interface ConversationStore {
   appendMessage(message: Message): Promise<void>;
   getConversation(id: string): Promise<Conversation | undefined>;
+  listConversations(userId: string): Promise<Conversation[]>;
   ensureConversation(id: string, userId: string): Promise<Conversation>;
+  deleteConversation(id: string): Promise<boolean>;
   updateConversation?(id: string, patch: Partial<Pick<Conversation, 'language' | 'difyConversationId' | 'summary' | 'handoffStatus' | 'handoffReason'>>): Promise<void>;
 }
 
@@ -46,6 +48,16 @@ export class InMemoryConversationStore implements ConversationStore {
   async getConversation(id: string): Promise<Conversation | undefined> {
     const conversation = this.conversations.get(id);
     return conversation ? structuredClone(conversation) : undefined;
+  }
+
+  async listConversations(userId: string): Promise<Conversation[]> {
+    return [...this.conversations.values()]
+      .filter(item => item.userId === userId)
+      .map(item => structuredClone(item));
+  }
+
+  async deleteConversation(id: string): Promise<boolean> {
+    return this.conversations.delete(id);
   }
 
   async updateConversation(id: string, patch: Partial<Pick<Conversation, 'language' | 'difyConversationId' | 'summary' | 'handoffStatus' | 'handoffReason'>>): Promise<void> {

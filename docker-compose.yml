@@ -27,6 +27,9 @@ services:
       context: ./frontend
       args:
         VITE_API_BASE_URL: /api
+    environment:
+      PORT: 80
+      BACKEND_PRIVATE_URL: http://backend:4100
     depends_on:
       - backend
     ports:

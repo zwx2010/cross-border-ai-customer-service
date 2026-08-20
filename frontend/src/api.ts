@@ -7,6 +7,28 @@ export async function createConversation(userId: string, language: string): Prom
   return response.json() as Promise<Conversation>;
 }
 
+export async function listConversations(userId: string): Promise<Conversation[]> {
+  const response = await fetch(`${baseUrl}/api/conversations?userId=${encodeURIComponent(userId)}`);
+  if (!response.ok) throw new Error('conversation_list_failed');
+  return response.json() as Promise<Conversation[]>;
+}
+
+export async function getConversation(id: string, userId: string): Promise<Conversation> {
+  const response = await fetch(`${baseUrl}/api/conversations/${encodeURIComponent(id)}?userId=${encodeURIComponent(userId)}`);
+  if (!response.ok) throw new Error('conversation_load_failed');
+  return response.json() as Promise<Conversation>;
+}
+
+export async function deleteConversation(id: string, userId: string): Promise<void> {
+  const response = await fetch(`${baseUrl}/api/conversations/${encodeURIComponent(id)}?userId=${encodeURIComponent(userId)}`, { method: 'DELETE' });
+  if (!response.ok) throw new Error('conversation_delete_failed');
+}
+
+export async function requestHandoff(id: string, reason: string, summary?: string): Promise<void> {
+  const response = await fetch(`${baseUrl}/api/handoff`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ conversationId: id, reason, summary }) });
+  if (!response.ok) throw new Error('handoff_failed');
+}
+
 export async function sendMessage(id: string, userId: string, query: string, onEvent: (event: Record<string, unknown>) => void): Promise<void> {
   const response = await fetch(`${baseUrl}/api/conversations/${id}/messages`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ userId, query }) });
   if (!response.ok || !response.body) throw new Error('message_send_failed');

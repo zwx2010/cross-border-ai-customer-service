@@ -30,3 +30,18 @@ test('conversation API creates and restores a conversation', async () => {
   assert.equal(restored.json().language, 'en');
   await app.close();
 });
+
+test('conversation API deletes only the owner conversation', async () => {
+  const app = await createApp({
+    config: { difyBaseUrl: 'http://dify.local/v1', difyApiKey: 'secret', mysqlUrl: 'mysql://x', port: 4100 },
+    store: new InMemoryConversationStore()
+  });
+  await app.inject({ method: 'POST', url: '/api/conversations', payload: { conversationId: 'delete-me', userId: 'u1' } });
+  const forbidden = await app.inject({ method: 'DELETE', url: '/api/conversations/delete-me?userId=u2' });
+  assert.equal(forbidden.statusCode, 404);
+  const deleted = await app.inject({ method: 'DELETE', url: '/api/conversations/delete-me?userId=u1' });
+  assert.equal(deleted.statusCode, 204);
+  const missing = await app.inject({ method: 'GET', url: '/api/conversations/delete-me?userId=u1' });
+  assert.equal(missing.statusCode, 404);
+  await app.close();
+});

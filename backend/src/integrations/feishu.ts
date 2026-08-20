@@ -24,3 +24,34 @@ export async function sendFeishuWebhook(webhookUrl: string, payload: Record<stri
   const response = await fetcher(webhookUrl, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(payload) });
   if (!response.ok) throw new Error(`feishu_webhook_failed:${response.status}`);
 }
+
+export function buildHandoffWebhookPayload(input: { conversationId: string; reason: string; summary?: string }): Record<string, unknown> {
+  const summary = input.summary?.trim() || '暂无会话摘要';
+  return {
+    msg_type: 'interactive',
+    card: {
+      schema: '2.0',
+      config: { update_multi: false },
+      header: {
+        template: 'orange',
+        title: { tag: 'plain_text', content: '⚠️ 客服请求人工接管' }
+      },
+      body: {
+        elements: [
+          {
+            tag: 'div',
+            text: {
+              tag: 'lark_md',
+              content: `**会话 ID：** ${input.conversationId}\n**触发原因：** ${input.reason}\n**会话摘要：** ${summary}`
+            }
+          },
+          { tag: 'hr' },
+          {
+            tag: 'note',
+            elements: [{ tag: 'plain_text', content: '请打开客服工作台查看会话并及时接管。' }]
+          }
+        ]
+      }
+    }
+  };
+}

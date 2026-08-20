@@ -1,4 +1,4 @@
-CREATE TABLE conversations (
+CREATE TABLE IF NOT EXISTS conversations (
   id VARCHAR(64) PRIMARY KEY,
   user_id VARCHAR(128) NOT NULL,
   language VARCHAR(16) NULL,
@@ -11,7 +11,7 @@ CREATE TABLE conversations (
   INDEX idx_conversations_user_updated (user_id, updated_at)
 );
 
-CREATE TABLE messages (
+CREATE TABLE IF NOT EXISTS messages (
   event_id VARCHAR(128) PRIMARY KEY,
   conversation_id VARCHAR(64) NOT NULL,
   role VARCHAR(16) NOT NULL,
@@ -20,7 +20,7 @@ CREATE TABLE messages (
   CONSTRAINT fk_messages_conversation FOREIGN KEY (conversation_id) REFERENCES conversations(id)
 );
 
-CREATE TABLE handoff_events (
+CREATE TABLE IF NOT EXISTS handoff_events (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
   conversation_id VARCHAR(64) NOT NULL,
   reason VARCHAR(128) NOT NULL,

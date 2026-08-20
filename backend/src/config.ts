@@ -3,6 +3,8 @@ export interface Environment {
   DIFY_API_KEY?: string;
   MYSQL_URL?: string;
   PORT?: string;
+  FEISHU_WEBHOOK_URL?: string;
+  FEISHU_ENCRYPT_KEY?: string;
 }
 
 export interface AppConfig {
@@ -10,6 +12,8 @@ export interface AppConfig {
   difyApiKey: string;
   mysqlUrl: string;
   port: number;
+  feishuWebhookUrl?: string;
+  feishuEncryptKey?: string;
 }
 
 export function loadConfig(env: Environment = process.env): AppConfig {
@@ -25,6 +29,8 @@ export function loadConfig(env: Environment = process.env): AppConfig {
     difyBaseUrl: (env.DIFY_BASE_URL ?? 'http://localhost/v1').replace(/\/$/, ''),
     difyApiKey,
     mysqlUrl: env.MYSQL_URL ?? 'mysql://customer_service:customer_service@localhost:3306/customer_service',
-    port
+    port,
+    feishuWebhookUrl: env.FEISHU_WEBHOOK_URL?.trim() || undefined,
+    feishuEncryptKey: env.FEISHU_ENCRYPT_KEY?.trim() || undefined
   };
 }

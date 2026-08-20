@@ -1,4 +1,5 @@
 import Fastify, { type FastifyInstance } from 'fastify';
+import cors from '@fastify/cors';
 import { loadConfig, type AppConfig } from './config.js';
 import { openDifyChat, parseSseFrame } from './dify.js';
 import { InMemoryConversationStore, type ConversationStore } from './store.js';
@@ -19,6 +20,7 @@ export async function createApp(options: AppOptions = {}): Promise<FastifyInstan
   const store = options.store ?? new InMemoryConversationStore();
   const feishuEventStore = options.feishuEventStore ?? new InMemoryFeishuEventStore();
   const app = Fastify({ logger: false });
+  await app.register(cors, { origin: true });
 
   app.get('/health', async () => ({
     status: 'ok',
@@ -51,6 +53,24 @@ export async function createApp(options: AppOptions = {}): Promise<FastifyInstan
       return conversation;
     }
   );
+
+  app.delete<{ Params: { id: string }; Querystring: { userId?: string } }>(
+    '/api/conversations/:id',
+    async (request, reply) => {
+      if (!request.query.userId) return reply.code(400).send({ error: 'userId_required' });
+      const conversation = await store.getConversation(request.params.id);
+      if (!conversation || conversation.userId !== request.query.userId) {
+        return reply.code(404).send({ error: 'conversation_not_found' });
+      }
+      await store.deleteConversation(request.params.id);
+      return reply.code(204).send();
+    }
+  );
+
+  app.get<{ Querystring: { userId?: string } }>('/api/conversations', async (request, reply) => {
+    if (!request.query.userId) return reply.code(400).send({ error: 'userId_required' });
+    return store.listConversations(request.query.userId);
+  });
 
   app.post<{ Body: { event_id?: string; conversation_id?: string; action?: string }; Headers: { 'x-feishu-timestamp'?: string; 'x-feishu-signature'?: string } }>(
     '/api/feishu/events',
@@ -100,11 +120,19 @@ export async function createApp(options: AppOptions = {}): Promise<FastifyInstan
         user: request.body.userId,
         conversationId: conversation.difyConversationId
       });
-      reply.raw.writeHead(200, { 'content-type': 'text/event-stream; charset=utf-8', 'cache-control': 'no-cache' });
+      reply.hijack();
+      reply.raw.writeHead(200, {
+        'content-type': 'text/event-stream; charset=utf-8',
+        'cache-control': 'no-cache',
+        connection: 'keep-alive',
+        'access-control-allow-origin': request.headers.origin ?? '*',
+        vary: 'Origin'
+      });
       const reader = response.body?.getReader();
       if (!reader) return reply.raw.end();
       const decoder = new TextDecoder();
       let buffer = '';
+      const pendingAssistantMessages = new Map<string, { conversationId: string; content: string }>();
       while (true) {
         const part = await reader.read();
         if (part.done) break;
@@ -116,10 +144,15 @@ export async function createApp(options: AppOptions = {}): Promise<FastifyInstan
           if (!event) continue;
           reply.raw.write(`data: ${JSON.stringify(event)}\n\n`);
           if (event.type === 'delta') {
-            await store.appendMessage({ eventId: event.messageId, conversationId: conversation.id, role: 'assistant', content: event.text });
+            const pending = pendingAssistantMessages.get(event.messageId) ?? { conversationId: conversation.id, content: '' };
+            pending.content += event.text;
+            pendingAssistantMessages.set(event.messageId, pending);
             if (store.updateConversation) await store.updateConversation(conversation.id, { difyConversationId: event.conversationId });
           }
         }
+      }
+      for (const [eventId, message] of pendingAssistantMessages) {
+        await store.appendMessage({ eventId, conversationId: message.conversationId, role: 'assistant', content: message.content });
       }
       reply.raw.end();
       return reply;
